@@ -3,39 +3,53 @@ using System.Collections.Generic;
 
 public class PuzzleLogic: ActivatorBase
 {
-    public List<ActivatorBase> ActivatorObjectsList = new List<ActivatorBase>();
-    public List<bool> PuzzleValues = new List<bool>();
+    [System.Serializable]
+    public class PuzzleObject
+    {
+        public ActivatorBase Object;
+        public bool value;
 
-    void Awake() {
-        CheckListsCounts();
+    }
+    public List<PuzzleObject> PuzzleObjectsList = new List<PuzzleObject>();
+
+
+    void Update()
+    // me falta hacer que esto solo se ejecute cuando el jugador interactua con el puzzle, no en cada frame
+    {
+        Activate();
     }
 
-    void Update() 
+    void OnActivateObject()
+    //se llama a esta funcion cuando el jugador interactua con cualquiera de las aprtes del puzzle
+    // entiendo que los objetos emiten algo cuando se activan pero no lo encuentro
+    //mi solucion sería comprobar en el update si alguno de los objetos de la lista ha cambiado de estado cuando
+    //y si es así llamar a la funcion Activate() que comprueba si el puzzle está resuelto
     {
-        CheckActiveObjects();
+        foreach (var puzzleObject in PuzzleObjectsList)
+        {   
+
+        }
     }
-    void CheckActiveObjects()
-        //comprobar si cada objeto coincide con su equivalente en la otra lista
+    bool CheckActiveObjects()
+
+    //comprobar si cada objeto coincide con su equivalente en la otra lista
     {
-        for (int i = 1; i < ActivatorObjectsList.Count; i++)
+        for (int i = 1; i < PuzzleObjectsList.Count; i++)
         {
-            if (ActivatorObjectsList[i].IsActivated != PuzzleValues[i]) 
+            if (PuzzleObjectsList[i].Object.IsActivated != PuzzleObjectsList[i].value)
             {
-                break;
+                return false;
             }
         }
-         Activate();
-
+        Debug.Log("puzzle: solucionado");
+        return true;
+        
     }
     private void Activate()
     {
-        _isActivated = !_isActivated; //logic
+        _isActivated = CheckActiveObjects(); //logic
         ActivateObjects(_isActivated); //logic
     }
 
-    void CheckListsCounts() {
-        if (ActivatorObjectsList.Count != PuzzleValues.Count)
-            Debug.LogError("[PuzzleLogic] Lists Counts are different .");
-    }
 
 }
