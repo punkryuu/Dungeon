@@ -1,41 +1,46 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PuzzleLogic: ActivatorBase
+public class PuzzleLogic : ActivatorBase
 {
-    public List<ActivatorBase> ActivatorObjectsList = new List<ActivatorBase>();
-    public List<bool> PuzzleValues = new List<bool>();
-
-    void Awake() {
-        CheckListsCounts();
-    }
-
-    void Update() 
+    [System.Serializable]
+    public class PuzzleObject
     {
-        CheckActiveObjects();
+        public ActivatorBase activator;
+        public bool value;
+
     }
-    void CheckActiveObjects()
-        //comprobar si cada objeto coincide con su equivalente en la otra lista
+    public List<PuzzleObject> PuzzleObjectsList = new List<PuzzleObject>();
+
+    void Start()
     {
-        for (int i = 1; i < ActivatorObjectsList.Count; i++)
+        foreach (var puzzleObject in PuzzleObjectsList)
         {
-            if (ActivatorObjectsList[i].IsActivated != PuzzleValues[i]) 
+            puzzleObject.activator.ToActivate.AddListener(ActivatorUpdated);
+        }
+    }
+    void ActivatorUpdated(bool newActive)
+    {
+        Debug.Log("lever Activated");
+        bool correct = CheckPuzzleCorrect();
+        _isActivated = correct; //logic
+        ActivateObjects(correct); //logic
+    }
+    bool CheckPuzzleCorrect()
+
+    //comprobar si cada objeto coincide con su equivalente en la otra lista
+    {
+        foreach (var item in PuzzleObjectsList)
+        {
+            if (item.activator.IsActivated != item.value)
             {
-                break;
+                return false;
             }
         }
-         Activate();
+
+        return true;
+
+
 
     }
-    private void Activate()
-    {
-        _isActivated = !_isActivated; //logic
-        ActivateObjects(_isActivated); //logic
-    }
-
-    void CheckListsCounts() {
-        if (ActivatorObjectsList.Count != PuzzleValues.Count)
-            Debug.LogError("[PuzzleLogic] Lists Counts are different .");
-    }
-
 }
