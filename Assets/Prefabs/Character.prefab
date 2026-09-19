@@ -4915,6 +4915,7 @@ GameObject:
   - component: {fileID: 5052216139663031456}
   - component: {fileID: 5952397226309433072}
   - component: {fileID: 5916693975504883213}
+  - component: {fileID: 5782678300471730251}
   m_Layer: 0
   m_Name: Character
   m_TagString: Untagged
@@ -5206,6 +5207,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 973d2d44bc54c1a479d641e1e507394f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DeathBehaviour
+--- !u!114 &5782678300471730251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1898377477949474490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dffe50c7c82478744af597388cc5150d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  coins: 0
 --- !u!1001 &4087967273253248154
 PrefabInstance:
   m_ObjectHideFlags: 0

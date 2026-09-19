@@ -6,7 +6,7 @@ public abstract class PickupBase : MonoBehaviour
     public UnityAction OnPickup;
     public bool pickupEnabled = true;
 
-    protected abstract void PickupEffect();
+    protected abstract void PickupEffect(Picker _picker);
 
     void Start()
     {
@@ -21,7 +21,7 @@ public abstract class PickupBase : MonoBehaviour
         }
     }
 
-    public void PickUp()
+    public void PickUp(Picker _picker)
     {
         if(!pickupEnabled) return;
 
@@ -31,6 +31,6 @@ public abstract class PickupBase : MonoBehaviour
 
         gameObject.SetActive(false);
 
-        PickupEffect();
+        PickupEffect(_picker);
     }
 }

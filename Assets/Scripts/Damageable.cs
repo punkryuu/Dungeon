@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace  Gameplay.Systems
-{
-    public class Damageable : MonoBehaviour
-    {
+namespace Gameplay.Systems {
+    public class Damageable : MonoBehaviour {
         public float CurrentHitpoints => _currentHitpoints;
         [SerializeField] float _currentHitpoints;
 
@@ -21,14 +19,14 @@ namespace  Gameplay.Systems
         public UnityAction OnDeath;
         public UnityAction<float> OnDamageTaken;
 
-        void Start()
+        void Awake()
         {
             _currentHitpoints = _maxHitpoints;
         }
 
         public void TakeDamage(float damage)
         {
-            if(_isDead || !canTakeDamage) return;
+            if (_isDead || !canTakeDamage) return;
 
             _currentHitpoints -= damage;
             if (_currentHitpoints <= 0 && !inmortal)

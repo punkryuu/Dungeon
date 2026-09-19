@@ -1,9 +1,14 @@
+using UnityEditor.Sprites;
 using UnityEngine;
 
 public class CoinPickup : PickupBase
 {
-    protected override void PickupEffect()
+    protected override void PickupEffect(Picker _picker)
     {
-        Debug.Log("Coin picked up!");
+        Inventory inventory = _picker.GetComponent<Inventory>();
+        if (inventory != null)
+        {
+            inventory.AddOrSubtractCoins(1);
+        }
     }
 }

@@ -40,7 +40,7 @@ public class Picker : MonoBehaviour
             if (distance <= PickupDistance)
             {
                 //Trigger pickup logic.
-                pickup.PickUp();
+                pickup.PickUp(this);
             }
         }
     }
