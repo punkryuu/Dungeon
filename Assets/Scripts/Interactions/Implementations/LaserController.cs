@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class LaserController : MonoBehaviour
+public class LaserController : MonoBehaviour, ILaserReceiver
 {
 
 
@@ -11,27 +11,38 @@ public class LaserController : MonoBehaviour
         get { return isLaserOrigin || incomingLasers > 0; }
     }
     public bool isLaserOrigin;
-    private LaserController otherLaser;
+    private ILaserReceiver currentTarget;
+    private Transform targetTransform;
+    public Transform TargetTransform{  get { return targetTransform; } }
+    public Vector3 LaserEndPoint { get; private set; }
+    private ReceiverController receiver;
+
 
     [SerializeField] Transform laserPointer;
+    public Transform LaserPointer { get { return laserPointer; } }
+
 
     // Update is called once per frame
     void Update()
     {
         laserDirection = laserPointer.forward;
         if (canShootLaser)
-        { ThrowRay(); }
+        { 
+            ThrowRay(); 
+        }
         else
         {
-            if (otherLaser != null)
+            if (currentTarget != null)
             {
-                otherLaser.incomingLasers--;
-                otherLaser = null;
+                currentTarget.SubstractLaser();
+                currentTarget = null;
+                targetTransform = null;
             }
+ 
         }
-        if (otherLaser!= null)
+        if (targetTransform != null)
         {
-            Debug.DrawLine(transform.position, otherLaser.transform.position);
+            //Debug.DrawLine(transform.position, targetTransform.transform.position);
         }
     }
 
@@ -39,34 +50,50 @@ public class LaserController : MonoBehaviour
     void ThrowRay()
     {
         RaycastHit hit;
-        Debug.DrawRay(transform.position, laserDirection * 2, Color.red);
 
-        LaserController currentAimedLaser = null;
+        ILaserReceiver hitReceiver = null;
+        Transform hitTransform = null;
 
-        if (Physics.Raycast(transform.position, laserDirection, out hit))
+        Vector3 rayOrigin = laserPointer.position;
+        Vector3 rayDirection = laserPointer.forward;
+
+        if (Physics.Raycast(rayOrigin, rayDirection, out hit))
         {
-            hit.transform.TryGetComponent<LaserController>(out currentAimedLaser);
+            LaserEndPoint = hit.point;
 
+            if (hit.transform.TryGetComponent<ILaserReceiver>(out hitReceiver))
+            {
+                hitTransform = hit.transform;
+            }
+        }
+        else
+        {
+            LaserEndPoint = rayOrigin + rayDirection * 100f;
         }
 
-        if (currentAimedLaser != otherLaser)
+        if (hitReceiver != currentTarget)
         {
-            if (otherLaser != null)
+            if (currentTarget != null)
             {
-                otherLaser.incomingLasers--;
+                currentTarget.SubstractLaser();
             }
-            if (currentAimedLaser != null)
-            {
-                currentAimedLaser.incomingLasers++;
-            }
-            otherLaser = currentAimedLaser;
 
+            if (hitReceiver != null)
+            {
+                hitReceiver.AddLaser();
+            }
+
+            currentTarget = hitReceiver;
+            targetTransform = hitTransform;
         }
-
-
-
-
-
-
     }
+    public void AddLaser() 
+    {
+        incomingLasers++;
+    }
+    public void SubstractLaser()
+    {
+        incomingLasers--;
+    }
+
 }
